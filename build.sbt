@@ -1,4 +1,4 @@
-name := "CloudPointCostManager"
+name := "LambdaHandler"
 
 version := "1.0"
 
