@@ -107,16 +107,20 @@ class LambdaHandler {
 
     // This method will get the list of snack members
     def getSnackMembers(json: JsValue, out: java.io.OutputStream) = {
-
+        logger.info("Entering getSnackMembers1");
         val s3BucketName    = "ocg-snack-bucket"
         val fileName        = "snack_signup_list.json"
         val s3client        = new AmazonS3Client()
+        logger.info("Entering getSnackMembers2");
         val s3Object        = s3client.getObject(s3BucketName, fileName)
-        val snackRequest    = JacksMapper.readValue[SnackRequest](scala.io.Source.fromInputStream(s3Object.getObjectContent()).mkString)
-
+        val s3Data          = scala.io.Source.fromInputStream(s3Object.getObjectContent()).mkString
+        logger.info("Entering getSnackMembers3 = >" + s3Data);
+        val snackRequest    = JacksMapper.readValue[SnackRequest](s3Data)
+        logger.info("Entering getSnackMembers4 => "+ snackRequest);
         val snackReq = new SnackRequest("GET_SNACK_MEMBER_STATE", snackRequest.snackMemberList)
+        logger.info("Entering getSnackMembers5");
         val jsonData    = JacksMapper.writeValueAsString[SnackRequest](snackReq)
-
+        logger.info("Entering getSnackMembers6 =>" + jsonData);
         out.write(jsonData.getBytes())
         out.close()
     }
